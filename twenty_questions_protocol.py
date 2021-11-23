@@ -3,41 +3,67 @@
 # CS 330
 # Credit/Sources: Ideas from KnockKnockProtocol from Java
 
-def twenty_questions_protocol(self):
+def register(client):
+    client.send("[REGISTER]: Please register for an account.")
+    username = client.send(input("[REGISTER]: Please create a username: "))
+    username
+
+    password = client.send(input("[REGISTER]: Please create a password: "))
+    password
+
+
+def login(client, username, password):
+    client.send("Please confirm your username and password to login.")
+    login_username = client.send(input("[LOGIN]: Enter username: "))
+    login_password = client.send(input("[LOGIN]: Enter password: "))
+
+    if login_username != username:
+        client.send("[LOGIN]: INCORRECT USERNAME!")
+        client.send(login(username, password))
+
+    elif login_password != password:
+        client.send("[LOGIN]: INCORRECT PASSWORD!")
+        client.send(login(username, password))
+
+    else:
+        client.send("[LOGIN]: Successfully logged in, Welcome", username + "!")
+
+
+def twenty_qs():
     question = 0
-    response = 2
-    correct = 3
-    too_many = 4
-
-    count = ++1
+    response = 1
+    correct = 2
     state = question
-    word = input("Enter a word for the game: ")
 
-    guesses = input("Enter a Y/N question or a guess of the word: ")
-    answers = input("Enter 'Yes' or 'No' based on the question: ")
-    output = ""
+    count = 0
+
+    word = input("[WORDMASTER]Enter a word for the game: ")
+    guesses = ""
+    answers = ""
 
     while count != 21:
+
         if state == question:
+            count = count + 1
             if count == 20:
-                state = too_many
-            print("You have ", count, " guesses/questions left.")
-            output = guesses
-            state = question
+                print("[SERVER]The user has guessed too many times.")
+                return "[SERVER]The game is over, the Word Master has won!"
+            guesses = input("[GUESSER]Enter a Y/N question or a guess of the word: ")
+            state = response
+            print(count)
 
         elif state == response:
-            if output == word:
+            if guesses == word:
                 state = correct
-            else:
-                output = answers
+                print(count)
+
+            elif guesses != answers:
+                answers = input("[WORDMASTER]Enter 'Yes' or 'No' based on the question: ")
                 state = question
+                print(count)
 
         elif state == correct:
-            print("The word '", word, "' has been guessed correctly!")
-            output = "The game is over, the Guesser has won!"
+            print("[SERVER]The word '", word, "' has been guessed correctly!")
+            print(count)
+            return "The game is over, the Guesser has won!"
 
-        elif state == too_many:
-            print("The user has guessed too many times.")
-            output = "The game is over, the Word Master has won!"
-
-        return output
