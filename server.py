@@ -4,7 +4,9 @@
 # Credit/Sources: Bek Brace & ProgrammingKnowledge on YouTube (Guiding the code that is presented here).
 
 import threading
+import twenty_questions_protocol
 import socket
+
 host = "127.0.0.1"
 port = 10821
 
@@ -12,7 +14,6 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((host, port))
 server.listen()
 clients = []
-usernames = []
 
 def broadcast(message):
     for client in clients:
@@ -22,13 +23,25 @@ def connection():
     print("[SERVER]: Running & Listening")
     client, address = server.accept()
     print("[SERVER]: Connection ", address, " accepted.")
-    client.send("username?".encode("utf-8"))
-    username = client.recv(1024)
-    usernames.append(username)
     clients.append(client)
-    print("[SERVER]: ", username.encode("utf-8"))
-    broadcast("[SERVER]: ", username, " has logged in.".encode("utf-8"))
     client.send("[CLIENT]: You're now connected.".encode("utf-8"))
 
+def server_register():
+    client = clients[0]
+    twenty_questions_protocol.register(client)
+
+def server_login():
+    client = clients[0]
+    twenty_questions_protocol.login(client, username, password)
 
 connection()
+
+def runnable():
+    twenty_questions_protocol.register(client)
+    twenty_questions_protocol.login(client,username,password)
+    twenty_questions_protocol.twenty_qs()
+
+
+runnable()
+
+
