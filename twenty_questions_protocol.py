@@ -3,9 +3,40 @@
 # CS 330
 # Credit/Sources: Ideas from KnockKnockProtocol from Java
 
-class TwentyQuestionsProtocol:
+class TQP:
 
-    def register(self):
+        CONNECTION = 0
+        REGISTER = 1
+        state = REGISTER
+
+        username = []
+        password = []
+        cnum = 0
+
+        def processInput(theInput):
+
+            if TQP.state == TQP.CONNECTION:
+                theOutput = 'Connection Established.'
+                input('\n')
+                if theInput == 'REG':
+                    TQP.state == TQP.REGISTER
+                else:
+                    input('Invalid command.')
+
+            elif TQP.state == TQP.REGISTER:
+                if theInput.readline() == 'REG':
+                    theOutput = input('ENTER: [username] [password]:"\n')
+                    split = theInput.readline()
+                    split.split(' ', 1)
+                    TQP.username[TQP.cnum] = split[0]
+                    TQP.password[TQP.cnum] = split[1]
+                else:
+                    input('Error: Try again.')
+
+            return theOutput
+
+
+'''
         client.send("[REGISTER]: Please register for an account.")
         username = client.send(input("[REGISTER]: Please create a username: "))
         username
@@ -68,4 +99,4 @@ class TwentyQuestionsProtocol:
                 print("[SERVER]The word '", word, "' has been guessed correctly!")
                 print(count)
                 return "The game is over, the Guesser has won!"
-
+'''

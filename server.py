@@ -20,5 +20,11 @@ client, address = server.accept()
 print(client, 'connected by', address)
 
 while True:
-    message = client.recv(1024)
-    client.send(message)
+    TCP = TCP()
+    inputLn = ''
+    outputLn = client.recv(1024)
+
+    while client.readline() != '':
+        outputLn = inputLn.readline()
+        message = client.recv(1024)
+        client.sendall(message)
