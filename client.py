@@ -10,16 +10,10 @@ client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(("127.0.0.1", 10821))
 
 while True:
-    sending = str(input('Type something\n'))
-    bytes_sending = str.encode(sending)
-    client.sendall(bytes_sending)
-    message = client.recv(1024)
-
-    #printOut = client.send()
-    #printIn = client.recv()
-
-    print('Received', repr(message))
-
+    fromServer = client.recv(1024)
+    fromUser = str(input())
+    fromUser = str.encode(fromUser)
+    client.send(fromUser)
 
 
 

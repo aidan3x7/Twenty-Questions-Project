@@ -9,6 +9,7 @@ import twenty_questions_protocol
 '''
 
 import socket
+import twenty_questions_protocol
 
 host = "127.0.0.1"
 port = 10821
@@ -20,11 +21,12 @@ client, address = server.accept()
 print(client, 'connected by', address)
 
 while True:
-    TCP = TCP()
+    TQS = twenty_questions_protocol.TQP()
     inputLn = ''
-    outputLn = client.recv(1024)
-
-    while client.readline() != '':
-        outputLn = inputLn.readline()
-        message = client.recv(1024)
-        client.sendall(message)
+    outputLn = TQS.processInput()
+    client_read = client.makefile()
+    while client_read.readline() != '':
+        input_read = inputLn.makefile()
+        out = input_read.readline()
+        server_send = str.encode(outputLn(out))
+        client.send(server_send)

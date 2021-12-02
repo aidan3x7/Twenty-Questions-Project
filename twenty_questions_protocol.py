@@ -3,6 +3,8 @@
 # CS 330
 # Credit/Sources: Ideas from KnockKnockProtocol from Java
 
+import socket
+
 class TQP:
 
         CONNECTION = 0
@@ -14,7 +16,7 @@ class TQP:
         cnum = 0
 
         def processInput(theInput):
-
+            theOutput = ''
             if TQP.state == TQP.CONNECTION:
                 theOutput = 'Connection Established.'
                 input('\n')
@@ -24,14 +26,14 @@ class TQP:
                     input('Invalid command.')
 
             elif TQP.state == TQP.REGISTER:
-                if theInput.readline() == 'REG':
+                if theInput == 'REG':
                     theOutput = input('ENTER: [username] [password]:"\n')
-                    split = theInput.readline()
+                    split = theInput
                     split.split(' ', 1)
                     TQP.username[TQP.cnum] = split[0]
                     TQP.password[TQP.cnum] = split[1]
                 else:
-                    input('Error: Try again.')
+                    print('Error: Try again.')
 
             return theOutput
 
