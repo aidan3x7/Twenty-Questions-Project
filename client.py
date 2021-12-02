@@ -11,9 +11,11 @@ client.connect(("127.0.0.1", 10821))
 
 while True:
     fromServer = client.recv(1024)
-    fromUser = str(input())
+    fromServer = fromServer.decode()
+    print(fromServer)
+    fromUser = input()
     fromUser = str.encode(fromUser)
-    client.send(fromUser)
+    client.sendall(fromUser)
 
 
 

@@ -26,12 +26,12 @@ class TQP:
                     input('Invalid command.')
 
             elif TQP.state == TQP.REGISTER:
-                if theInput == 'REG':
-                    theOutput = input('ENTER: [username] [password]:"\n')
-                    split = theInput
-                    split.split(' ', 1)
-                    TQP.username[TQP.cnum] = split[0]
-                    TQP.password[TQP.cnum] = split[1]
+                regCheck = theInput.split()
+                if regCheck[0] == 'REG':
+                    inputPop = theInput.replace('REG', '')
+                    splitInput = inputPop.split()
+                    TQP.username[TQP.cnum] = splitInput[0]
+                    TQP.password[TQP.cnum] = splitInput[1]
                 else:
                     print('Error: Try again.')
 

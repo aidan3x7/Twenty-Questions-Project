@@ -5,7 +5,6 @@
 
 '''
 import threading
-import twenty_questions_protocol
 '''
 
 import socket
@@ -20,6 +19,22 @@ server.listen()
 client, address = server.accept()
 print(client, 'connected by', address)
 
+# Server initiates and incorporates the protocol
+TQS = twenty_questions_protocol.TQP()
+
+# Server receives inputs from the client
+while True:
+    inputLn = client.recv(1024)
+    inputLn = inputLn.decode()
+
+# Server runs client input through the protocol to receive the servers output back to the client based on the protocol
+    outputLn = TQS.processInput(inputLn)
+
+# Based on the protocols response to the clients input, server sends the output response back to the client
+    outputLn = str.encode(outputLn)
+    client.send(outputLn)
+
+'''
 while True:
     TQS = twenty_questions_protocol.TQP()
     inputLn = ''
@@ -30,3 +45,4 @@ while True:
         out = input_read.readline()
         server_send = str.encode(outputLn(out))
         client.send(server_send)
+'''
