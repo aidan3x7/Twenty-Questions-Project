@@ -9,28 +9,49 @@ import socket
 class TQP:
     CONNECTION = 0
     REGISTER = 1
-    state = REGISTER
+    LIST = 2
+    CREATE = 3
+    JOIN = 4
+
+    state = CONNECTION
 
     username = []
     password = []
-    cnum = 0
+    room = []
 
     def processInput(self, theInput):
         theOutput = ''
         if TQP.state == TQP.CONNECTION:
-            theOutput = 'Connection Established.'
-            input('\n')
-            regCheck = theInput.split()
-            if regCheck[0] == 'REG':
-                TQP.state == TQP.REGISTER
-            else:
-                input('Invalid command.')
+            inputCheck = theInput.split()
+            if inputCheck[0] == 'REG':
+                TQP.state = TQP.REGISTER
+
+            elif theInput == 'LIST':
+                TQP.state = TQP.LIST
+
+            elif inputCheck[0] == 'CREATE':
+                TQP.state = TQP.CREATE
 
         elif TQP.state == TQP.REGISTER:
             input_split = theInput.split()
-            TQP.username[TQP.cnum] = input_split[1]
-            TQP.password[TQP.cnum] = input_split[2]
+            TQP.username = input_split[1]
+            TQP.password = input_split[2]
+            theOutput = '[SERVER]You are now registered.'
+            TQP.state = TQP.CONNECTION
 
+        elif TQP.state == TQP.LIST:
+            for i in range(len(TQP.room)):
+                theOutput = []
+                theOutput[i] = TQP.room[i]
+            TQP.state = TQP.CONNECTION
+
+        elif TQP.state == TQP.CREATE:
+            input_split = theInput.split()
+            TQP.room = input_split[1]
+            theOutput = '[SERVER]GameRoom created.'
+            TQP.state = TQP.CONNECTION
+
+        print('Current State before output:', TQP.state)
         return theOutput
 
 
