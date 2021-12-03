@@ -9,49 +9,51 @@ import socket
 class TQP:
     CONNECTION = 0
     REGISTER = 1
-    LIST = 2
+    LOGGEDIN = 2
     CREATE = 3
     JOIN = 4
 
     state = CONNECTION
-
-    username = []
-    password = []
     room = []
 
+    def __init__(self):
+        self.loggedIn = False
+        self.joinedRoom = False
+
     def processInput(self, theInput):
-        theOutput = ''
-        if TQP.state == TQP.CONNECTION:
-            inputCheck = theInput.split()
-            if inputCheck[0] == 'REG':
-                TQP.state = TQP.REGISTER
+        if not self.loggedIn:
+            if theInput.startswith('REG'):
+                splitIn = theInput.split()
+                TQP.username = splitIn[1]
+                TQP.password = splitIn[2]
+                theOutput = '[SERVER]You are now registered.'
+                self.loggedIn = True
 
-            elif theInput == 'LIST':
-                TQP.state = TQP.LIST
+            elif theInput == 'HELP':
+                theOutput = 'Hello and welcome to the Twenty Questions Game Lobby!\n' \
+                            'Please register in order to login.\nCOMMANDS:\n' \
+                            'REG [username , password]\nLIST\nCREATE [name]\n'
 
-            elif inputCheck[0] == 'CREATE':
-                TQP.state = TQP.CREATE
+            else:
+                theOutput = '[SERVER]Please register before using that command.'
 
-        elif TQP.state == TQP.REGISTER:
-            input_split = theInput.split()
-            TQP.username = input_split[1]
-            TQP.password = input_split[2]
-            theOutput = '[SERVER]You are now registered.'
-            TQP.state = TQP.CONNECTION
+        elif not self.joinedRoom:
+            if theInput.startswith('REG'):
+                theOutput = '[SERVER]You are already registered. Try the HELP command.'
 
-        elif TQP.state == TQP.LIST:
-            for i in range(len(TQP.room)):
-                theOutput = []
-                theOutput[i] = TQP.room[i]
-            TQP.state = TQP.CONNECTION
+            elif theInput == 'HELP':
+                theOutput = 'Hello and welcome to the Twenty Questions Game Lobby!\n' \
+                            'COMMANDS:\nREG [username , password]\nLIST\nCREATE [name]\n'
 
-        elif TQP.state == TQP.CREATE:
-            input_split = theInput.split()
-            TQP.room = input_split[1]
-            theOutput = '[SERVER]GameRoom created.'
-            TQP.state = TQP.CONNECTION
+            elif theInput.startswith('CREATE'):
+                splitIn = theInput.split()
+                TQP.room = splitIn[1]
+                theOutput = '[SERVER]Room created.'
 
-        print('Current State before output:', TQP.state)
+            elif theInput.startswith('JOIN'):
+                theOutput = '[SERVER]You have joined a room'
+                self.joinedRoom = True
+
         return theOutput
 
 
