@@ -5,37 +5,33 @@
 
 import socket
 
+
 class TQP:
+    CONNECTION = 0
+    REGISTER = 1
+    state = REGISTER
 
-        CONNECTION = 0
-        REGISTER = 1
-        state = REGISTER
+    username = []
+    password = []
+    cnum = 0
 
-        username = []
-        password = []
-        cnum = 0
+    def processInput(self, theInput):
+        theOutput = ''
+        if TQP.state == TQP.CONNECTION:
+            theOutput = 'Connection Established.'
+            input('\n')
+            regCheck = theInput.split()
+            if regCheck[0] == 'REG':
+                TQP.state == TQP.REGISTER
+            else:
+                input('Invalid command.')
 
-        def processInput(theInput):
-            theOutput = ''
-            if TQP.state == TQP.CONNECTION:
-                theOutput = 'Connection Established.'
-                input('\n')
-                if theInput == 'REG':
-                    TQP.state == TQP.REGISTER
-                else:
-                    input('Invalid command.')
+        elif TQP.state == TQP.REGISTER:
+            input_split = theInput.split()
+            TQP.username[TQP.cnum] = input_split[1]
+            TQP.password[TQP.cnum] = input_split[2]
 
-            elif TQP.state == TQP.REGISTER:
-                regCheck = theInput.split()
-                if regCheck[0] == 'REG':
-                    inputPop = theInput.replace('REG', '')
-                    splitInput = inputPop.split()
-                    TQP.username[TQP.cnum] = splitInput[0]
-                    TQP.password[TQP.cnum] = splitInput[1]
-                else:
-                    print('Error: Try again.')
-
-            return theOutput
+        return theOutput
 
 
 '''

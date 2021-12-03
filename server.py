@@ -17,7 +17,7 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((host, port))
 server.listen()
 client, address = server.accept()
-print(client, 'connected by', address)
+print('Client connected by', address)
 
 # Server initiates and incorporates the protocol
 TQS = twenty_questions_protocol.TQP()
@@ -25,10 +25,10 @@ TQS = twenty_questions_protocol.TQP()
 # Server receives inputs from the client
 while True:
     inputLn = client.recv(1024)
-    inputLn = inputLn.decode()
+    protocolInput = inputLn.decode()
 
 # Server runs client input through the protocol to receive the servers output back to the client based on the protocol
-    outputLn = TQS.processInput(inputLn)
+    outputLn = TQS.processInput(protocolInput)
 
 # Based on the protocols response to the clients input, server sends the output response back to the client
     outputLn = str.encode(outputLn)
