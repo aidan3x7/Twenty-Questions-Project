@@ -7,18 +7,16 @@ import socket
 
 
 class TQP:
-    CONNECTION = 0
-    REGISTER = 1
-    LOGGEDIN = 2
-    CREATE = 3
-    JOIN = 4
 
-    state = CONNECTION
     room = []
+    username = []
+    password = []
+    gameword = 'Giraffe'
 
     def __init__(self):
         self.loggedIn = False
         self.joinedRoom = False
+        self.gameFinished= False
 
     def processInput(self, theInput):
         if not self.loggedIn:
@@ -54,7 +52,28 @@ class TQP:
                 theOutput = '[SERVER]You have joined a room'
                 self.joinedRoom = True
 
+        elif not self.gameFinished:
+            game_start = 0
+            game_count = 0
+            if game_start == 0:
+                theOutput = '[SERVER]Please ask YES or NO questions and or guess what the word is! (No ?s after question)'
+                game_start += 1
+            elif game_count > 20:
+                theOutput = '[SERVER]You have asked too many questions, you lose.'
+                self.joinedRoom = False
+            elif theInput.lower() == 'Is it an animal' or 'Is it yellow' or 'Is it tall' or 'Is it big'\
+                    or 'Is it in a zoo' or 'Does it only eat plants':
+                game_count += 1
+                theOutput = 'Yes'
+            elif theInput.lower() == 'Giraffe':
+                theOutput = '[SERVER]You have guessed the word correctly, you win!'
+                self.joinedRoom = False
+            else:
+                game_count += 1
+                theOutput = 'No'
+
         return theOutput
+
 
 
 '''

@@ -3,10 +3,9 @@
 # CS 330
 # Credit/Sources: Bek Brace & ProgrammingKnowledge on YouTube (Guiding the code that is presented here).
 
-'''
-import threading
-'''
 
+import threading
+import time
 import socket
 import twenty_questions_protocol
 
