@@ -3,21 +3,23 @@
 # CS 330
 # Credit/Sources: Bek Brace & ProgrammingKnowledge on YouTube (Guiding the code that is presented here).
 
-
 import socket
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(("127.0.0.1", 10821))
+host = input('Please enter your host address:\n')
+port = int(input('Please enter a port (5477):\n'))
+
+try:
+    client.connect((host, port))
+except socket.error as e:
+    print(str(e))
 
 while True:
     fromUser = input()
-    fromUser = str.encode(fromUser)
-    client.sendall(fromUser)
+    client.sendall(str.encode(fromUser))
     fromServer = client.recv(1024)
-    fromServer = fromServer.decode()
-    print(fromServer)
+    print(fromServer.decode())
 
-
-
+client.close()
 
 

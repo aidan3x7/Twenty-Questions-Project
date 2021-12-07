@@ -3,21 +3,50 @@
 # CS 330
 # Credit/Sources: Bek Brace & ProgrammingKnowledge on YouTube (Guiding the code that is presented here).
 
-
-import threading
-import time
 import socket
 import twenty_questions_protocol
-
-host = "127.0.0.1"
-port = 10821
+from _thread import *
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind((host, port))
-server.listen()
-client, address = server.accept()
-print('Client connected by', address)
+host = '127.0.0.1'
+port = 5477
+ThreadCount = 0
 
+try:
+    server.bind((host, port))
+except socket.error as e:
+    print(str(e))
+
+print('Listening...')
+server.listen(2)
+
+def serverThread(client):
+    client.send(str.encode('Welcome to the Twenty Questions Server!'))
+    # Server initiates and incorporates the protocol
+    TQS = twenty_questions_protocol.TQP()
+
+    while True:
+        inputLn = client.recv(1024)
+
+        # Server runs client input through the protocol to
+        # receive the servers output back to the client based on the protocol
+        outputLn = TQS.processInput(inputLn.decode())
+
+        # Based on the protocols response to the clients input, server sends the output response back to the client
+        client.sendall(str.encode(outputLn))
+
+    client.close()
+
+
+while True:
+    client, address = server.accept()
+    print('Client connected by', address)
+    start_new_thread(serverThread, (client, ))
+    ThreadCount += 1
+    print('Thread Count: ', ThreadCount)
+server.close()
+
+'''
 # Server initiates and incorporates the protocol
 TQS = twenty_questions_protocol.TQP()
 
@@ -32,6 +61,8 @@ while True:
 # Based on the protocols response to the clients input, server sends the output response back to the client
     outputLn = str.encode(outputLn)
     client.send(outputLn)
+'''
+
 
 '''
 while True:

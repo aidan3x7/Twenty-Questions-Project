@@ -11,66 +11,75 @@ class TQP:
     room = []
     username = []
     password = []
+    gamecount = 0
     gameword = 'Giraffe'
 
     def __init__(self):
         self.loggedIn = False
         self.joinedRoom = False
-        self.gameFinished= False
+        self.gameStart = False
+        self.gameFinished = False
 
     def processInput(self, theInput):
         if not self.loggedIn:
-            if theInput.startswith('REG'):
+            if theInput.lower().startswith('reg'):
                 splitIn = theInput.split()
-                TQP.username = splitIn[1]
-                TQP.password = splitIn[2]
+                TQP.username.append(splitIn[1])
+                TQP.password.append(splitIn[2])
                 theOutput = '[SERVER]You are now registered.'
                 self.loggedIn = True
 
-            elif theInput == 'HELP':
+            elif theInput.lower() == 'help':
                 theOutput = 'Hello and welcome to the Twenty Questions Game Lobby!\n' \
                             'Please register in order to login.\nCOMMANDS:\n' \
-                            'REG [username , password]\nLIST\nCREATE [name]\n'
+                            'REG [username , password]\nLIST\nCREATE [name]'
 
             else:
                 theOutput = '[SERVER]Please register before using that command.'
 
         elif not self.joinedRoom:
-            if theInput.startswith('REG'):
+            if theInput.lower().startswith('reg'):
                 theOutput = '[SERVER]You are already registered. Try the HELP command.'
 
-            elif theInput == 'HELP':
+            elif theInput.lower() == 'help':
                 theOutput = 'Hello and welcome to the Twenty Questions Game Lobby!\n' \
-                            'COMMANDS:\nREG [username , password]\nLIST\nCREATE [name]\n'
+                            'COMMANDS:\nLIST\nCREATE [name]\nJOIN [name]'
 
-            elif theInput.startswith('CREATE'):
+            elif theInput.lower() == 'list':
+                list_convert = '\n'.join(map(str, TQP.room))
+                theOutput = list_convert
+
+            elif theInput.lower().startswith('create'):
                 splitIn = theInput.split()
-                TQP.room = splitIn[1]
+                TQP.room.append(splitIn[1])
                 theOutput = '[SERVER]Room created.'
 
-            elif theInput.startswith('JOIN'):
+            elif theInput.lower().startswith('join'):
                 theOutput = '[SERVER]You have joined a room'
                 self.joinedRoom = True
 
+            else:
+                theOutput = '[SERVER]Unknown command, please use HELP for list of commands.'
+
+        elif not self.gameStart:
+            theOutput = '[SERVER]Please ask YES or NO questions and or guess what the word is! (No ?s after question)'
+            self.gameStart = True
+
         elif not self.gameFinished:
-            game_start = 0
-            game_count = 0
-            if game_start == 0:
-                theOutput = '[SERVER]Please ask YES or NO questions and or guess what the word is! (No ?s after question)'
-                game_start += 1
-            elif game_count > 20:
+            TQP.gamecount += 1
+            if TQP.gamecount > 20:
                 theOutput = '[SERVER]You have asked too many questions, you lose.'
                 self.joinedRoom = False
-            elif theInput.lower() == 'Is it an animal' or 'Is it yellow' or 'Is it tall' or 'Is it big'\
-                    or 'Is it in a zoo' or 'Does it only eat plants':
-                game_count += 1
-                theOutput = 'Yes'
-            elif theInput.lower() == 'Giraffe':
+
+            elif theInput.lower() == 'giraffe':
                 theOutput = '[SERVER]You have guessed the word correctly, you win!'
                 self.joinedRoom = False
+
             else:
-                game_count += 1
-                theOutput = 'No'
+                print(theInput)
+                theOutput = input("Please enter ~Yes~ or ~No~ based on the clients question:\n")
+
+            print(TQP.gamecount)
 
         return theOutput
 
