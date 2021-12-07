@@ -11,6 +11,8 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host = '127.0.0.1'
 port = 5477
 ThreadCount = 0
+clients = []
+
 
 try:
     server.bind((host, port))
@@ -21,16 +23,18 @@ print('Listening...')
 server.listen(2)
 
 def serverThread(client):
-    client.send(str.encode('Welcome to the Twenty Questions Server!'))
     # Server initiates and incorporates the protocol
     TQS = twenty_questions_protocol.TQP()
-
     while True:
         inputLn = client.recv(1024)
 
         # Server runs client input through the protocol to
         # receive the servers output back to the client based on the protocol
         outputLn = TQS.processInput(inputLn.decode())
+
+        if outputLn.lower().startswith('reg'):
+            split = outputLn.split()
+            clients.append(split[1])
 
         # Based on the protocols response to the clients input, server sends the output response back to the client
         client.sendall(str.encode(outputLn))
@@ -40,6 +44,7 @@ def serverThread(client):
 
 while True:
     client, address = server.accept()
+    clients.append(client)
     print('Client connected by', address)
     start_new_thread(serverThread, (client, ))
     ThreadCount += 1

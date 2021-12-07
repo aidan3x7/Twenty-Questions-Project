@@ -13,6 +13,7 @@ class TQP:
     password = []
     gamecount = 0
     gameword = 'Giraffe'
+    room_count = 0
 
     def __init__(self):
         self.loggedIn = False
@@ -46,15 +47,21 @@ class TQP:
                             'COMMANDS:\nLIST\nCREATE [name]\nJOIN [name]'
 
             elif theInput.lower() == 'list':
-                list_convert = '\n'.join(map(str, TQP.room))
+                list_convert = ''
+                count = 0
+                for i in TQP.room:
+                    list_convert += '\n' + str(count) + ':' + i
+                    count += 1
                 theOutput = list_convert
 
             elif theInput.lower().startswith('create'):
+                TQP.room_count += 1
                 splitIn = theInput.split()
                 TQP.room.append(splitIn[1])
                 theOutput = '[SERVER]Room created.'
 
             elif theInput.lower().startswith('join'):
+
                 theOutput = '[SERVER]You have joined a room'
                 self.joinedRoom = True
 
