@@ -8,32 +8,34 @@ import socket
 
 class TQP:
 
-    room = []
+    open_room = []
+    joined_room = []
     username = []
-    password = []
     gamecount = 0
     gameword = 'Giraffe'
     room_count = 0
 
-    def __init__(self):
+    def __init__(self, user, user_room):
         self.loggedIn = False
         self.joinedRoom = False
         self.gameStart = False
         self.gameFinished = False
+        self.user = user
+        self.user_room = user_room
 
     def processInput(self, theInput):
         if not self.loggedIn:
             if theInput.lower().startswith('reg'):
                 splitIn = theInput.split()
+                self.user = splitIn
                 TQP.username.append(splitIn[1])
-                TQP.password.append(splitIn[2])
-                theOutput = '[SERVER]You are now registered.'
+                theOutput = '[SERVER]You are now registered'
                 self.loggedIn = True
 
             elif theInput.lower() == 'help':
                 theOutput = 'Hello and welcome to the Twenty Questions Game Lobby!\n' \
                             'Please register in order to login.\nCOMMANDS:\n' \
-                            'REG [username , password]\nLIST\nCREATE [name]'
+                            'REG [username]\nLIST\nUSERS\nCREATE [name]\nHELP'
 
             else:
                 theOutput = '[SERVER]Please register before using that command.'
@@ -49,7 +51,15 @@ class TQP:
             elif theInput.lower() == 'list':
                 list_convert = ''
                 count = 0
-                for i in TQP.room:
+                for i in TQP.open_room:
+                    list_convert += '\n' + str(count) + ':' + i
+                    count += 1
+                theOutput = list_convert
+
+            elif theInput.lower() == 'users':
+                list_convert = ''
+                count = 0
+                for i in TQP.username:
                     list_convert += '\n' + str(count) + ':' + i
                     count += 1
                 theOutput = list_convert
@@ -57,11 +67,18 @@ class TQP:
             elif theInput.lower().startswith('create'):
                 TQP.room_count += 1
                 splitIn = theInput.split()
-                TQP.room.append(splitIn[1])
+                TQP.open_room.append(splitIn[1])
                 theOutput = '[SERVER]Room created.'
 
             elif theInput.lower().startswith('join'):
-
+                splitIn = theInput.split()
+                room_select = TQP.open_room.index(splitIn[1])
+                TQP.joined_room.append(TQP.open_room[room_select])
+                if TQP.joined_room.count(splitIn) == 2:
+                    TQP.open_room.remove(splitIn)
+                    user_replace = TQP.joined_room.index(splitIn)
+                    TQP.joined_room.insert(user_replace, self.user)
+                self.user_room = splitIn
                 theOutput = '[SERVER]You have joined a room'
                 self.joinedRoom = True
 
