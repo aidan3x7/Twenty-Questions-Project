@@ -38,7 +38,6 @@ def serverThread(client):
         # Based on the protocols response to the clients input, server sends the output response back to the client
         client.sendall(str.encode(outputLn))
 
-    print('Connection lost.')
     client.close()
 
 
