@@ -23,6 +23,7 @@ class TQP:
         self.gameFinished = False
         self.one_user = False
         self.guesser = False
+        self.wordmaster = False
         self.user = user
         self.user_room = user_room
         self.user_room_index = user_room_index
@@ -36,7 +37,7 @@ class TQP:
                 if len(splitIn) < 2:
                     theOutput = 'Hello and welcome to the Twenty Questions Game Registration!\n' \
                                 'Please register in order to login.\n' \
-                                'COMMANDS:\n' \
+                                'Commands:\n' \
                                 'REG [username]'
                 else:
                     noncommand = splitIn[1]
@@ -52,7 +53,7 @@ class TQP:
             elif theInput.lower() == 'help':
                 theOutput = 'Hello and welcome to the Twenty Questions Game Registration!\n' \
                             'Please register in order to login.\n' \
-                            'COMMANDS:\n' \
+                            'Commands:\n' \
                             'REG [username]'
 
             else:
@@ -64,7 +65,7 @@ class TQP:
 
             elif theInput.lower() == 'help':
                 theOutput = 'Hello and welcome to the Twenty Questions Game Lobby!\n' \
-                            'COMMANDS:\n' \
+                            'Commands:\n' \
                             'LIST          -- Shows a list of the Open Rooms\n' \
                             'USERS         -- Shows a list of all Users\n' \
                             'CREATE [name] -- Creates a room with a specified name\n' \
@@ -131,8 +132,10 @@ class TQP:
             if TQP.joined_room.count(self.user_room) == 1:
                 if TQP.joined_room[self.user_room_index] != self.user_room:
                     self.word = TQP.joined_room[self.user_room_index]
+                    self.word = self.word.lower()
                     TQP.joined_room[self.user_room_index] = '--'
-                    theOutput = '[SERVER]You are the Guesser, please ask yes or no questions!'
+                    TQP.joined_room.remove(self.user_room)
+                    theOutput = '[SERVER]You are the Guesser, please ask Yes or No questions!'
                     self.guesser = True
                     self.gameStart = True
                 else:
@@ -148,6 +151,7 @@ class TQP:
                         noncommand = splitIn[1]
                         TQP.joined_room[self.user_room_index] = noncommand
                         self.word = noncommand
+                        self.word = self.word.lower()
                         theOutput = '[SERVER]You are the WordMaster, please answer Yes or No ONLY to questions!'
                         self.wordmaster = True
                         self.gameStart = True
@@ -157,7 +161,6 @@ class TQP:
                                 'or the Guesser.'
 
         elif not self.gameFinished:
-
             if self.game_count > 20:
                 if self.guesser:
                     theOutput = '[SERVER]You have asked too many questions, you lose.'
@@ -172,21 +175,16 @@ class TQP:
                 self.gameStart = False
                 self.gameFinished = False
 
-            elif theInput.lower().startswith('guess'):
-                splitIn = theInput.split(' ', 1)
-                if len(splitIn) < 2:
-                    theOutput = '[SERVER]Unknown command, please use HELP for list of commands.'
-                else:
-                    noncommand = splitIn[1]
-                    if noncommand == self.word:
-                        if self.guesser:
-                            theOutput = '[SERVER]You have guessed the word correctly, you win!'
-                            TQP.joined_room[self.user_room_index] = self.word
-                            self.joinedRoom = False
-                            self.gameStart = False
-                            self.gameFinished = False
-                        else:
-                            theOutput = '[SERVER]Yes...that is the word you chose.'
+            elif theInput.lower() == self.word:
+                if self.guesser:
+                    theOutput = '[SERVER]You have guessed the word correctly, you win!'
+                    TQP.joined_room[self.user_room_index] = self.word
+                    self.joinedRoom = False
+                    self.gameStart = False
+                    self.gameFinished = False
+
+                elif self.wordmaster:
+                    theOutput = '[SERVER]Yes...that is the word you chose.'
 
             elif TQP.joined_room[self.user_room_index] == self.word:
                 theOutput = '[SERVER]The guesser has guessed correctly, you lose.'
@@ -204,35 +202,41 @@ class TQP:
                     theOutput = '[SERVER]Unknown command, please use HELP for list of commands.'
                 else:
                     noncommand = splitIn[1]
-                    if not self.guesser:
-                        if noncommand.lower() != 'yes' or 'no':
+                    if self.wordmaster:
+                        if noncommand.lower() == 'yes':
+                            theOutput = '[SERVER]Use CHECK to see response once given.'
+                            TQP.joined_room[self.user_room_index] = noncommand
+                        elif noncommand.lower() == 'no':
+                            theOutput = '[SERVER]Use CHECK to see response once given.'
+                            TQP.joined_room[self.user_room_index] = noncommand
+                        else:
                             theOutput = '[SERVER]You can only ENTER [YES] or [NO]'
 
-                    else:
-                        theOutput = '[SERVER]Please use the CHECK command to see if the other' \
-                                    ' client has responded before using enter again.'
+                    elif self.guesser:
+                        theOutput = '[SERVER]Use CHECK to see response once given.'
                         TQP.joined_room[self.user_room_index] = noncommand
+
 
             elif theInput.lower() == 'help':
                 if self.guesser:
-                    theOutput = '[SERVER]Commands:\n' \
+                    theOutput = 'Commands:\n' \
                                 'ENTER [...] -- To ask a Yes or No question\n' \
                                 'CHECK -- Check to see if WordMaster has answered your question\n' \
                                 '(You guess by just typing in your guess without a no command)'
-                else:
-                    theOutput = '[SERVER]Commands:\n' \
+                elif self.wordmaster:
+                    theOutput = 'Commands:\n' \
                                 'ENTER [...] -- To answer the question with either YES or NO (ONLY)\n' \
                                 'CHECK --  Check to see if guesser has asked another question'
 
             else:
                 if self.guesser:
-                    theOutput = '[SERVER]Commands:\n' \
+                    theOutput = 'Commands:\n' \
                                 'ENTER [...] -- To ask a Yes or No question\n' \
                                 'CHECK -- Check to see if WordMaster has answered your question\n' \
                                 '(You guess by just typing in your guess without a no command)'
 
-                else:
-                    theOutput = '[SERVER]Commands:\n' \
+                elif self.wordmaster:
+                    theOutput = 'Commands:\n' \
                                 'ENTER [...] -- To answer the question with either YES or NO (ONLY)\n' \
                                 'CHECK --  Check to see if guesser has asked another question'
 
