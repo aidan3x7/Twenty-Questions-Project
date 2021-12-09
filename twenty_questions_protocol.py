@@ -120,7 +120,7 @@ class TQP:
                         if TQP.joined_room.count(noncommand) == 2:
                             TQP.open_room.remove(noncommand)
                         self.user_room = noncommand
-                        theOutput = '[SERVER]You have joined a room'
+                        theOutput = '[SERVER]You have joined room: ' + noncommand
                         self.user_room_index = TQP.joined_room.index(noncommand)
                         self.joinedRoom = True
 
