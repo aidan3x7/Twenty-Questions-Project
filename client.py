@@ -1,7 +1,7 @@
 # Client File
 # Aidan Liljehorn
 # CS 330
-# Credit/Sources: Bek Brace & ProgrammingKnowledge on YouTube (Guiding the code that is presented here).
+# Credit/Sources: https://codezup.com/socket-server-with-multiple-clients-model-multithreading-python/
 
 import socket
 
@@ -21,5 +21,4 @@ while True:
     print(fromServer.decode())
 
 client.close()
-
 
