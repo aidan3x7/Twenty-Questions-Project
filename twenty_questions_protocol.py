@@ -172,7 +172,7 @@ class TQP:
                 self.gameStart = False
                 self.gameFinished = False
 
-            elif theInput.lower.startswith('guess'):
+            elif theInput.lower().startswith('guess'):
                 splitIn = theInput.split(' ', 1)
                 if len(splitIn) < 2:
                     theOutput = '[SERVER]Unknown command, please use HELP for list of commands.'
